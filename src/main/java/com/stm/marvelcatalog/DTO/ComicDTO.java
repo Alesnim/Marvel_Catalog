@@ -4,15 +4,25 @@ import com.stm.marvelcatalog.model.Character;
 import org.bson.types.Binary;
 
 import java.util.List;
+import java.util.Objects;
 
 public class ComicDTO {
 
+    private String id;
     private String name;
     private String description;
     private List<Character> characters;
     private Binary thumbnail;
 
     public ComicDTO() {
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -46,6 +56,30 @@ public class ComicDTO {
     public void setThumbnail(Binary thumbnail) {
         this.thumbnail = thumbnail;
 
+    }
+
+    @Override
+    public String toString() {
+        return "ComicDTO{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", characters=" + characters +
+                ", thumbnail=" + thumbnail +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ComicDTO comicDTO = (ComicDTO) o;
+        return Objects.equals(getId(), comicDTO.getId()) && Objects.equals(getName(), comicDTO.getName()) && Objects.equals(getDescription(), comicDTO.getDescription()) && Objects.equals(getCharacters(), comicDTO.getCharacters()) && Objects.equals(getThumbnail(), comicDTO.getThumbnail());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getName(), getDescription(), getCharacters(), getThumbnail());
     }
 
     public boolean isEmpty() {

@@ -18,19 +18,6 @@ public class Comic {
     private List<Character> characters;
     private Binary thumbnail;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Comic that = (Comic) o;
-        return Objects.equals(getId(), that.getId()) && Objects.equals(getName(), that.getName()) && Objects.equals(getDescription(), that.getDescription()) && Objects.equals(getCharacters(), that.getCharacters()) && Objects.equals(getThumbnail(), that.getThumbnail());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId(), getName(), getDescription(), getCharacters(), getThumbnail());
-    }
-
     public String getDescription() {
         return description;
     }
@@ -71,6 +58,27 @@ public class Comic {
         this.name = name;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Comic comic = (Comic) o;
+        return Objects.equals(getId(), comic.getId()) && Objects.equals(getName(), comic.getName()) && Objects.equals(getDescription(), comic.getDescription()) && Objects.equals(getCharacters(), comic.getCharacters()) && Objects.equals(getThumbnail(), comic.getThumbnail());
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getName(), getDescription(), getCharacters(), getThumbnail());
+    }
 
+    @Override
+    public String toString() {
+        return "Comic{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", characters=" + characters +
+                ", thumbnail=" + thumbnail +
+                '}';
+    }
 }

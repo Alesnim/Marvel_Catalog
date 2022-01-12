@@ -5,19 +5,35 @@ import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.Date;
 import java.util.Objects;
 
+/**
+ * Character Entity class
+ */
 @Document(collection = "characters")
 public class Character {
 
+    /**
+     * Id of Character in DB (Mongo "_id")
+     */
     @Id
     private ObjectId id;
+    /**
+     * Name of Character
+     */
     private String name;
+    /**
+     * Description of Character
+     */
     private String description;
-    private Date modified;
+    /**
+     * Image of Character (Binary for Mongo)
+     */
     private Binary thumbnail;
-    private ComicList comics;
+    /**
+     * Uri of comics collection
+     */
+    private String comics;
 
 
     public ObjectId getId() {
@@ -44,14 +60,6 @@ public class Character {
         this.description = description;
     }
 
-    public Date getModified() {
-        return modified;
-    }
-
-    public void setModified(Date modified) {
-        this.modified = modified;
-    }
-
     public Binary getThumbnail() {
         return thumbnail;
     }
@@ -60,11 +68,11 @@ public class Character {
         this.thumbnail = thumbnail;
     }
 
-    public ComicList getComics() {
+    public String getComics() {
         return comics;
     }
 
-    public void setComics(ComicList comics) {
+    public void setComics(String comics) {
         this.comics = comics;
     }
 
@@ -73,11 +81,22 @@ public class Character {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Character character = (Character) o;
-        return Objects.equals(getId(), character.getId()) && Objects.equals(getName(), character.getName()) && Objects.equals(getDescription(), character.getDescription()) && Objects.equals(getModified(), character.getModified()) && Objects.equals(getThumbnail(), character.getThumbnail()) && Objects.equals(getComics(), character.getComics());
+        return Objects.equals(getId(), character.getId()) && Objects.equals(getName(), character.getName()) && Objects.equals(getDescription(), character.getDescription()) && Objects.equals(getThumbnail(), character.getThumbnail()) && Objects.equals(getComics(), character.getComics());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getName(), getDescription(), getModified(), getThumbnail(), getComics());
+        return Objects.hash(getId(), getName(), getDescription(), getThumbnail(), getComics());
+    }
+
+    @Override
+    public String toString() {
+        return "Character{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", thumbnail=" + thumbnail +
+                ", comics='" + comics + '\'' +
+                '}';
     }
 }

@@ -1,19 +1,17 @@
 package com.stm.marvelcatalog.DTO;
 
 
-import com.stm.marvelcatalog.model.ComicList;
 import org.bson.types.Binary;
 
-import java.util.Date;
+import java.util.Objects;
 
 public class CharacterDTO {
+    private String id;
     private String name;
     private String description;
-    private Date modified;
     private Binary thumbnail;
-    private ComicList comics;
-
-
+    private String comics;
+    private String thumbnailURL;
     public CharacterDTO() {
     }
 
@@ -33,14 +31,6 @@ public class CharacterDTO {
         this.description = description;
     }
 
-    public Date getModified() {
-        return modified;
-    }
-
-    public void setModified(Date modified) {
-        this.modified = modified;
-    }
-
     public Binary getThumbnail() {
         return thumbnail;
     }
@@ -52,17 +42,58 @@ public class CharacterDTO {
     public boolean isEmpty() {
         return name == null
                 && description == null
-                && modified == null
                 && thumbnail == null
                 && comics == null;
     }
 
 
-    public ComicList getComics() {
+    public String getComics() {
         return comics;
     }
 
-    public void setComics(ComicList comics) {
+    public void setComics(String comics) {
         this.comics = comics;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+
+    public String getThumbnailURL() {
+        return thumbnailURL;
+    }
+
+    public void setThumbnailURL(String thumbnailURL) {
+        this.thumbnailURL = thumbnailURL;
+    }
+
+    @Override
+    public String toString() {
+        return "CharacterDTO{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", thumbnail=" + thumbnail +
+                ", comics='" + comics + '\'' +
+                ", thumbnailURL='" + thumbnailURL + '\'' +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CharacterDTO that = (CharacterDTO) o;
+        return Objects.equals(getId(), that.getId()) && Objects.equals(getName(), that.getName()) && Objects.equals(getDescription(), that.getDescription()) && Objects.equals(getThumbnail(), that.getThumbnail()) && Objects.equals(getComics(), that.getComics()) && Objects.equals(getThumbnailURL(), that.getThumbnailURL());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getName(), getDescription(), getThumbnail(), getComics(), getThumbnailURL());
     }
 }

@@ -8,16 +8,16 @@ import java.util.List;
 public interface ComicsService {
 
     /**
-     * Method searches all character
+     * Method searches all comics
      *
-     * @return list of all character
+     * @return list of all comics
      */
     List<ComicDTO> getAllComics();
 
 
     /**
-     * @param id of character
-     * @return Character DAO from database
+     * @param id of comics
+     * @return Comics DAO from database
      */
     ComicDTO getComicsById(String id);
 
@@ -25,8 +25,8 @@ public interface ComicsService {
     /**
      * Adding character in base
      *
-     * @param comics Character params
-     * @return instance of created character
+     * @param comics comics params
+     * @return instance of created comics
      */
     Comic insertComics(ComicDTO comics);
 }

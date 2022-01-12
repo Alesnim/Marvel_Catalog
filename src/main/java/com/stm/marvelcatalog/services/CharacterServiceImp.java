@@ -5,7 +5,6 @@ import com.stm.marvelcatalog.model.Character;
 import com.stm.marvelcatalog.repository.CharacterRepo;
 import com.stm.marvelcatalog.util.MappingUtil;
 import org.bson.types.ObjectId;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -44,5 +43,16 @@ public class CharacterServiceImp implements CharacterService {
         Character c = MappingUtil.mapToCharacter(characterDTO);
         characterRepo.save(c);
         return c;
+    }
+
+
+    @Override
+    public Character updateCharacter(CharacterDTO characterDTO) {
+        return null;
+    }
+
+    @Override
+    public boolean containCharacterById(String id) {
+        return characterRepo.existsById(new ObjectId(id));
     }
 }
