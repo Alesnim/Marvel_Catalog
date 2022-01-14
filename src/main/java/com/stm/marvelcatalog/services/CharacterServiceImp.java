@@ -31,7 +31,6 @@ public class CharacterServiceImp implements CharacterService {
 
     @Override
     public CharacterDTO getCharacterById(String id) {
-
         return characterRepo
                 .findById(new ObjectId(id))
                 .map(MappingUtil::mapToCharacterDTO)
@@ -40,9 +39,7 @@ public class CharacterServiceImp implements CharacterService {
 
     @Override
     public Character insertCharacter(CharacterDTO characterDTO) throws IllegalArgumentException {
-        Character c = MappingUtil.mapToCharacter(characterDTO);
-        characterRepo.save(c);
-        return c;
+        return characterRepo.save(MappingUtil.mapToCharacter(characterDTO));
     }
 
 

@@ -3,8 +3,11 @@ package com.stm.marvelcatalog.model;
 import org.bson.types.Binary;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -33,7 +36,8 @@ public class Character {
     /**
      * Uri of comics collection
      */
-    private String comics;
+    @DBRef
+    private List<Comic> comics;
 
 
     public ObjectId getId() {
@@ -68,11 +72,11 @@ public class Character {
         this.thumbnail = thumbnail;
     }
 
-    public String getComics() {
+    public List<Comic> getComics() {
         return comics;
     }
 
-    public void setComics(String comics) {
+    public void setComics(List<Comic> comics) {
         this.comics = comics;
     }
 
@@ -86,7 +90,7 @@ public class Character {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getName(), getDescription(), getThumbnail(), getComics());
+        return Objects.hash(getId(), getName(), getDescription(), getThumbnail());
     }
 
     @Override

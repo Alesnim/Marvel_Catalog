@@ -40,4 +40,15 @@ public class ComicServiceImp implements ComicsService {
         comicsRepo.save(c);
         return c;
     }
+
+    @Override
+    public boolean containComicsById(String id) {
+        if (id != null) return comicsRepo.existsById(new ObjectId(id));
+        else return false;
+    }
+
+    @Override
+    public Comic updateComic(ComicDTO c) {
+        return comicsRepo.save(MappingUtil.mapToComic(c));
+    }
 }

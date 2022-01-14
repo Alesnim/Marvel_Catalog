@@ -1,21 +1,18 @@
 package com.stm.marvelcatalog.controller;
 
 
-import com.stm.marvelcatalog.DTO.CharacterDTO;
 import com.stm.marvelcatalog.DTO.ComicDTO;
 import com.stm.marvelcatalog.DTO.ComicResponse;
 import com.stm.marvelcatalog.controller.validators.ImageFileValidator;
-import com.stm.marvelcatalog.model.Character;
 import com.stm.marvelcatalog.model.Comic;
 import com.stm.marvelcatalog.services.CharacterService;
 import com.stm.marvelcatalog.services.ComicsService;
 import com.stm.marvelcatalog.util.AppConstants;
 import com.stm.marvelcatalog.util.MappingUtil;
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import io.swagger.v3.oas.annotations.Parameter;
+import org.bson.types.ObjectId;
 import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -23,7 +20,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -100,16 +96,25 @@ public class ComicController {
             dto.setName(name);
             dto.setDescription(description);
             dto.setThumbnail(ImageFileValidator.validate(img));
-
-            if (comics.length == 0) dto.setCharacters(null);
+            if (comics.length == 0) dto.setCharacters(Collections.emptySet());
             else {
                 dto.setCharacters(Stream.of(comics)
+                        .filter(ObjectId::isValid)
                         .filter(characterServiceImp::containCharacterById)
                         .map(characterServiceImp::getCharacterById)
                         .map(MappingUtil::mapToCharacter)
-                        .collect(Collectors.toList()));
+                        .collect(Collectors.toSet()));
             }
             Comic c = comicsServiceImp.insertComics(dto);
+
+            // update character when save comics
+            characterServiceImp.getAllCharacter()
+                    .forEach(x -> {
+                        x.getComics().add(c);
+                        characterServiceImp.insertCharacter(x);
+                    });
+
+
             dto.setId(c.getId().toHexString());
             return new ResponseEntity<>(MappingUtil.mapToComicResponse(dto), HttpStatus.CREATED);
         } catch (Exception e) {

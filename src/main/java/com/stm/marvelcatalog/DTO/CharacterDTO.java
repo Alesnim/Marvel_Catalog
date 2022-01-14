@@ -1,17 +1,20 @@
 package com.stm.marvelcatalog.DTO;
 
 
+import com.stm.marvelcatalog.model.Comic;
 import org.bson.types.Binary;
 
 import java.util.Objects;
+import java.util.Set;
 
 public class CharacterDTO {
     private String id;
     private String name;
     private String description;
     private Binary thumbnail;
-    private String comics;
+    private Set<Comic> comics;
     private String thumbnailURL;
+
     public CharacterDTO() {
     }
 
@@ -40,18 +43,18 @@ public class CharacterDTO {
     }
 
     public boolean isEmpty() {
-        return name == null
-                && description == null
-                && thumbnail == null
-                && comics == null;
+        return name != null
+                || description != null
+                || thumbnail != null
+                || comics != null;
     }
 
 
-    public String getComics() {
+    public Set<Comic> getComics() {
         return comics;
     }
 
-    public void setComics(String comics) {
+    public void setComics(Set<Comic> comics) {
         this.comics = comics;
     }
 

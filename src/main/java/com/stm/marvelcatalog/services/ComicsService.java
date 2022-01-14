@@ -29,4 +29,14 @@ public interface ComicsService {
      * @return instance of created comics
      */
     Comic insertComics(ComicDTO comics);
+
+    /**
+     * Search comics by id
+     *
+     * @param id id of comic
+     * @return True if comic in DB, else False
+     */
+    boolean containComicsById(String id);
+
+    Comic updateComic(ComicDTO c);
 }

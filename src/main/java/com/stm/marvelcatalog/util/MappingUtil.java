@@ -10,7 +10,12 @@ import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Util class for mapping data
@@ -24,7 +29,8 @@ public class MappingUtil {
         dto.setName(character.getName());
         dto.setDescription(character.getDescription());
         dto.setThumbnail(character.getThumbnail());
-        dto.setComics(character.getComics());
+        // Drop duplicate id comics
+        dto.setComics(new HashSet<>(character.getComics()));
 
         return dto;
     }
@@ -32,11 +38,11 @@ public class MappingUtil {
 
     public static Character mapToCharacter(CharacterDTO characterDTO) {
         Character character = new Character();
-        character.setId(new ObjectId(characterDTO.getId()));
+        if (characterDTO.getId() != null) character.setId(new ObjectId(characterDTO.getId()));
         character.setName(characterDTO.getName());
         character.setThumbnail(characterDTO.getThumbnail());
         character.setDescription(characterDTO.getDescription());
-        character.setComics(characterDTO.getComics());
+        character.setComics(new ArrayList<>(characterDTO.getComics()));
 
         return character;
     }
@@ -48,7 +54,7 @@ public class MappingUtil {
         c.setName(dto.getName());
         c.setDescription(dto.getDescription());
         c.setThumbnail(dto.getThumbnail());
-        c.setCharacters(dto.getCharacters());
+        c.setCharacters(new ArrayList<>(dto.getCharacters()));
 
         return c;
     }
@@ -59,7 +65,8 @@ public class MappingUtil {
         dto.setName(comic.getName());
         dto.setDescription(comic.getDescription());
         dto.setThumbnail(comic.getThumbnail());
-        dto.setCharacters(comic.getCharacters());
+        // Drop duplicates id
+        dto.setCharacters(new HashSet<>(comic.getCharacters()));
 
         return dto;
     }
@@ -67,6 +74,7 @@ public class MappingUtil {
 
     /**
      * Mapper for Character formatted response
+     *
      * @param dto params of character
      * @return Formatted response about character
      */
@@ -77,9 +85,13 @@ public class MappingUtil {
         response.setDescription(dto.getDescription());
         response.setThumbnails(uriResolver(dto.getId(), "character", "thumbnails"));
         // TODO: implement comicList url resolve
-
-
-        response.setComics(null);
+        var comix = Optional.ofNullable(dto.getComics());
+        comix.ifPresent(comicDTOS -> response.setComics(comicDTOS
+                .stream()
+                .parallel()
+                .map(x -> uriResolver(x.getId().toHexString(), "comics", ""))
+                .collect(Collectors.toList())
+        ));
 
         return response;
     }
@@ -102,7 +114,6 @@ public class MappingUtil {
         // resolve list of Characters to lis of links
         response.setCharacters(dto.getCharacters()
                 .stream()
-                .peek(System.out::println)
                 .map(x -> uriResolver(x.getId().toHexString(), "character", ""))
                 .collect(Collectors.toList()));
 
@@ -111,10 +122,10 @@ public class MappingUtil {
 
 
     /**
-     * @param id
-     * @param point
-     * @param option
-     * @return
+     * @param id id of object in DB
+     * @param point url extend tag (endpoint of entity)
+     * @param option optional end of url
+     * @return link to resource baseurl+point+id+option
      */
     public static String uriResolver(String id, String point, String option) {
         StringBuilder b = new StringBuilder(ServletUriComponentsBuilder

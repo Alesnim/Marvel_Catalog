@@ -5,13 +5,14 @@ import org.bson.types.Binary;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 public class ComicDTO {
 
     private String id;
     private String name;
     private String description;
-    private List<Character> characters;
+    private Set<Character> characters;
     private Binary thumbnail;
 
     public ComicDTO() {
@@ -41,11 +42,11 @@ public class ComicDTO {
         this.description = description;
     }
 
-    public List<Character> getCharacters() {
+    public Set<Character> getCharacters() {
         return characters;
     }
 
-    public void setCharacters(List<Character> characters) {
+    public void setCharacters(Set<Character> characters) {
         this.characters = characters;
     }
 

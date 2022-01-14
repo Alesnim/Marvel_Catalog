@@ -3,7 +3,9 @@ package com.stm.marvelcatalog.model;
 import org.bson.types.Binary;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
 import java.util.List;
 import java.util.Objects;
@@ -15,6 +17,7 @@ public class Comic {
     private ObjectId id;
     private String name;
     private String description;
+    @DBRef
     private List<Character> characters;
     private Binary thumbnail;
 
@@ -68,7 +71,7 @@ public class Comic {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getName(), getDescription(), getCharacters(), getThumbnail());
+        return Objects.hash(getId(), getName(), getDescription(), getThumbnail());
     }
 
     @Override
