@@ -66,7 +66,7 @@ public class Comic {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Comic comic = (Comic) o;
-        return Objects.equals(getId(), comic.getId()) && Objects.equals(getName(), comic.getName()) && Objects.equals(getDescription(), comic.getDescription()) && Objects.equals(getCharacters(), comic.getCharacters()) && Objects.equals(getThumbnail(), comic.getThumbnail());
+        return getId().equals(comic.getId()) && getName().equals(comic.getName()) && Objects.equals(getDescription(), comic.getDescription()) && Objects.equals(getThumbnail(), comic.getThumbnail());
     }
 
     @Override
