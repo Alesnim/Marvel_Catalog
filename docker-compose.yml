@@ -17,10 +17,8 @@ services:
   mongo:
     image: 'mongo'
     ports:
-      - 27017:27017
+      - "27017:27017"
     container_name: mongo
-#    volumes:
-#      - /home/sinoed/data/db:/data/db
     networks:
       - shared-net
 
