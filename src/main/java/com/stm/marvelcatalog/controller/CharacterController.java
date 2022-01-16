@@ -56,10 +56,13 @@ public class CharacterController {
         return new PageImpl<>(all, pageable, all.size());
     }
 
-    @ApiOperation(value = "Endpoint creates of character", notes = "Return of character status", tags = "Characters")
+    @ApiOperation(value = "Endpoint creates of characters", notes = "Return of create character", tags = "Characters")
     @ApiResponses(value = {@ApiResponse(code = 201, message = "Successful created", response = Page.class), @ApiResponse(code = 400, message = "Incorrect data")})
-    @PostMapping(value = "/character", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<CharacterResponse> createCharacter(@RequestPart String name, @RequestPart String description, @RequestPart MultipartFile img, @RequestParam String[] comics) {
+    @PostMapping(value = "/character", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<CharacterResponse> createCharacter(@RequestPart String name,
+                                                             @RequestPart String description,
+                                                             @RequestPart(required = false) MultipartFile img,
+                                                             @RequestParam(required = false) String[] comics) {
         try {
             CharacterDTO dto = new CharacterDTO();
             dto.setName(name);
@@ -67,19 +70,15 @@ public class CharacterController {
             dto.setThumbnail(ImageFileValidator.validate(img));
             if (comics.length != 0) {
                 dto.setComics(Stream.of(comics).filter(ObjectId::isValid).filter(comicsServiceImp::containComicsById).map(comicsServiceImp::getComicsById).map(MappingUtil::mapToComic).collect(Collectors.toSet()));
-
             } else {
                 dto.setComics(Collections.emptySet());
             }
-
             Character c = characterServiceImp.insertCharacter(dto);
-
             // update comics when save character
             c.getComics().forEach(x -> {
                 x.getCharacters().add(c);
                 comicsServiceImp.updateComic(MappingUtil.mapToComicDTO(x));
             });
-
             dto.setId(c.getId().toHexString());
             return new ResponseEntity<>(MappingUtil.mapToCharacterResponse(dto), HttpStatus.CREATED);
         } catch (IOException e) {
