@@ -58,9 +58,9 @@ public class CharacterController {
 
     @ApiOperation(value = "Endpoint creates of characters", notes = "Return of create character", tags = "Characters")
     @ApiResponses(value = {@ApiResponse(code = 201, message = "Successful created", response = Page.class), @ApiResponse(code = 400, message = "Incorrect data")})
-    @PostMapping(value = "/character", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<CharacterResponse> createCharacter(@RequestPart String name,
-                                                             @RequestPart String description,
+    @PostMapping(value = "/character", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<CharacterResponse> createCharacter(@RequestParam String name,
+                                                             @RequestParam String description,
                                                              @RequestPart(required = false) MultipartFile img,
                                                              @RequestParam(required = false) String[] comics) {
         try {

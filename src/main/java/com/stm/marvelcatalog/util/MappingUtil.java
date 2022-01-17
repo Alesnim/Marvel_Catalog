@@ -112,18 +112,21 @@ public class MappingUtil {
         // resolve url to image
         response.setThumbnail(uriResolver(dto.getId(), "comics", "thumbnails"));
         // resolve list of Characters to lis of links
-        response.setCharacters(dto.getCharacters()
-                .stream()
-                .map(x -> uriResolver(x.getId().toHexString(), "character", ""))
-                .collect(Collectors.toList()));
+        var characters = Optional.ofNullable(dto.getCharacters());
+        characters.ifPresent(
+                comicDto -> response.setCharacters(comicDto
+                        .stream()
+                        .map(x -> uriResolver(x.getId().toHexString(), "character", ""))
+                        .collect(Collectors.toList()))
+        );
 
         return response;
     }
 
 
     /**
-     * @param id id of object in DB
-     * @param point url extend tag (endpoint of entity)
+     * @param id     id of object in DB
+     * @param point  url extend tag (endpoint of entity)
      * @param option optional end of url
      * @return link to resource baseurl+point+id+option
      */

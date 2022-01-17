@@ -7,6 +7,7 @@ import com.stm.marvelcatalog.DTO.ComicDTO;
 import com.stm.marvelcatalog.DTO.ComicResponse;
 import com.stm.marvelcatalog.controller.validators.ImageFileValidator;
 import com.stm.marvelcatalog.exceptions.CharacterNotFoundException;
+import com.stm.marvelcatalog.exceptions.ComicNotFoundException;
 import com.stm.marvelcatalog.model.Comic;
 import com.stm.marvelcatalog.services.CharacterService;
 import com.stm.marvelcatalog.services.ComicsService;
@@ -78,13 +79,35 @@ public class ComicController {
         return new PageImpl<>(all, pageable, all.size());
     }
 
+    @ApiOperation(value = "Return comic by Id", tags = "Comics")
+    @ApiResponses({@ApiResponse(code = 200, message = "Success search, return comic"),
+            @ApiResponse(code = 404, message = "Comic not found"),
+            @ApiResponse(code = 400, message = "Id invalid")})
+    @GetMapping(value = "/comics/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<ComicResponse> searchComic(@PathVariable("id") String id) {
+        try {
+            if (!ObjectId.isValid(id)) throw new IllegalArgumentException();
+            ComicDTO c = comicsServiceImp.getComicsById(id);
+            ComicResponse response = MappingUtil.mapToComicResponse(c);
+            if (!c.isEmpty()) return new ResponseEntity<>(response, HttpStatus.OK);
+            else throw new ComicNotFoundException(id);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("Invalid id: %s", id), e);
+        } catch (ComicNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        }
+
+
+    }
+
 
     /**
      * Method for comics create
-     * @param img Image for preview comic (png, jpg, gif)
-     * @param name Name of comic
+     *
+     * @param img         Image for preview comic (png, jpg, gif)
+     * @param name        Name of comic
      * @param description Text of comic description
-     * @param characters List if id character
+     * @param characters  List if id character
      * @return Comic formatting response
      */
     @ApiOperation(value = "Create new comics", tags = "Comics")
@@ -97,8 +120,8 @@ public class ComicController {
     @PostMapping(value = "/comics", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.IMAGE_JPEG_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<ComicResponse> createComic(
             @RequestPart MultipartFile img,
-            @RequestPart String name,
-            @RequestPart String description,
+            @RequestParam String name,
+            @RequestParam String description,
             @RequestParam(required = false) String[] characters) {
         try {
             ComicDTO dto = new ComicDTO();
@@ -132,11 +155,12 @@ public class ComicController {
 
     /**
      * Return Page of character in comic
-     * @param id valid object id comic
-     * @param pageNo Page number
+     *
+     * @param id       valid object id comic
+     * @param pageNo   Page number
      * @param pageSize Count of page element
-     * @param sortBy Sort parameter
-     * @param sortDir Sort direction
+     * @param sortBy   Sort parameter
+     * @param sortDir  Sort direction
      * @return Page contain formatted character
      */
     @ApiOperation(value = "Return all character in comics", tags = "Comics")
@@ -167,6 +191,7 @@ public class ComicController {
 
     /**
      * Return image of comic
+     *
      * @param id Hex-string id of comic
      * @return Byte[] contain image
      */
@@ -184,10 +209,11 @@ public class ComicController {
 
     /**
      * Update comic data
-     * @param id Hex-string valid id of comic
-     * @param name New name of comic
-     * @param description New description of comic
-     * @param thumbmail New image of comic
+     *
+     * @param id            Hex-string valid id of comic
+     * @param name          New name of comic
+     * @param description   New description of comic
+     * @param thumbmail     New image of comic
      * @param characterList List of valid character id
      * @return Formatted comic with changed data
      */
